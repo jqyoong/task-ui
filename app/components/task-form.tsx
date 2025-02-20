@@ -70,6 +70,7 @@ export function TaskForm({ task, isSubmitting, onSubmit }: TaskFormProps) {
           leftSection={<CalendarIcon className="w-4 h-4" />}
           valueFormat="YYYY-MM-DD"
           placeholder="Pick a date"
+          clearable
         />
 
         <Group>

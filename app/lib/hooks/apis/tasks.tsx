@@ -144,7 +144,7 @@ const GetTaskById = ({ loaderData, id }: { loaderData: ApiLoader; id: string }) 
 const CreateNewTask = ({ loaderData }: { loaderData: ApiLoader }) => {
   const api = new API(loaderData?.env);
 
-  const addTask = async (name: string, description: string, due_date: string) => {
+  const addTask = async (name: string, description?: string, due_date?: string) => {
     const [error, response] = await api.post({
       path: `/api/v1/tasks/new`,
       payload: {

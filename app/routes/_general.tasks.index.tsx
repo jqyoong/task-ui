@@ -91,20 +91,23 @@ export default function Tasks() {
 
   return (
     <Container size="xl" mt="2rem">
-      <Title order={2} mb="lg">
-        Task Management
-      </Title>
+      <Group mb="2rem" justify="space-between">
+        <Title order={2}>Task Management</Title>
+        <Button onClick={() => navigate('/tasks/new')}>New Task</Button>
+      </Group>
 
       <Group mb="lg">
         <TextInput
           placeholder="Search tasks..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           leftSection={<MagnifyingGlassIcon className="w-4 h-4" />}
           style={{ flex: 1 }}
         />
-        <Button onClick={handleSearch}>Search</Button>
+        <Button variant="outline" onClick={handleSearch}>
+          Search
+        </Button>
       </Group>
 
       <LoadingOverlay visible={isLoadingTasksList} overlayProps={{ blur: 2 }} />
