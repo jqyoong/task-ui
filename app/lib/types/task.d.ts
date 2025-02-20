@@ -3,7 +3,7 @@ export interface Task extends Record<string, unknown> {
   name: string;
   description: string;
   status: 'not_urgent' | 'due_soon' | 'overdue';
-  due_date: string;
+  due_date: Date | null;
   created_at: Date;
   updated_at: Date;
 }
