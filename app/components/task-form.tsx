@@ -6,23 +6,46 @@ import { DatePickerInput } from '@mantine/dates';
 import { CalendarIcon } from '@radix-ui/react-icons';
 
 interface TaskFormProps {
-  task: Pick<Task, 'name' | 'description' | 'due_date' | 'status'>;
-  onSubmit: (values: TaskFormProps['task']) => void;
+  task?: Partial<Pick<Task, 'name' | 'description' | 'due_date' | 'status'>>;
   isSubmitting?: boolean;
+  onSubmit: (values: Required<Pick<Task, 'name' | 'description' | 'due_date'>>) => void;
 }
 
-export function TaskForm({ task, onSubmit, isSubmitting }: TaskFormProps) {
-  const [values, setValues] = useState(task);
+const defaultValues = {
+  name: '',
+  description: '',
+  due_date: null,
+};
+
+export function TaskForm({ task, isSubmitting, onSubmit }: TaskFormProps) {
+  const [values, setValues] = useState({
+    ...defaultValues,
+    ...task,
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(values);
+    onSubmit({
+      name: values.name,
+      description: values.description ?? '',
+      due_date: values.due_date,
+    });
+  };
+
+  const handleReset = () => {
+    if (task) {
+      setValues({
+        ...defaultValues,
+        ...task,
+      });
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <Stack gap="md">
-        <Badge {...getStatusBadgeProps(task.status)}>{task.status.replace('_', ' ')}</Badge>
+        {task?.status && <Badge {...getStatusBadgeProps(task.status)}>{task.status.replace('_', ' ')}</Badge>}
+
         <TextInput
           label="Task Name"
           required
@@ -33,7 +56,7 @@ export function TaskForm({ task, onSubmit, isSubmitting }: TaskFormProps) {
 
         <Textarea
           label="Description"
-          value={values.description}
+          value={values.description ?? ''}
           onChange={(e) => setValues((prev) => ({ ...prev, description: e.target.value }))}
           placeholder="Enter task description"
           rows={4}
@@ -41,7 +64,7 @@ export function TaskForm({ task, onSubmit, isSubmitting }: TaskFormProps) {
 
         <DatePickerInput
           label="Due Date"
-          value={values.due_date}
+          value={values.due_date ? new Date(values.due_date) : null}
           onChange={(date) => setValues((prev) => ({ ...prev, due_date: date }))}
           leftSection={<CalendarIcon className="w-4 h-4" />}
           valueFormat="YYYY-MM-DD"
@@ -52,9 +75,12 @@ export function TaskForm({ task, onSubmit, isSubmitting }: TaskFormProps) {
           <Button type="submit" loading={isSubmitting} disabled={isSubmitting} color="blue">
             {isSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>
-          <Button type="button" variant="outline" color="gray" onClick={() => setValues(initialValues)}>
-            Cancel
-          </Button>
+
+          {task && (
+            <Button type="button" variant="outline" color="gray" onClick={handleReset}>
+              Cancel
+            </Button>
+          )}
         </Group>
       </Stack>
     </form>
