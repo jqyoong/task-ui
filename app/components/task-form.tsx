@@ -1,5 +1,6 @@
 import { type Task } from '@/lib/types/task';
 
+import { Form } from '@remix-run/react';
 import { useState } from 'react';
 import { TextInput, Textarea, Button, Stack, Group, Badge } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
@@ -42,7 +43,7 @@ export function TaskForm({ task, isSubmitting, onSubmit }: TaskFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit}>
       <Stack gap="md">
         {task?.status && <Badge {...getStatusBadgeProps(task.status)}>{task.status.replace('_', ' ')}</Badge>}
 
@@ -83,7 +84,7 @@ export function TaskForm({ task, isSubmitting, onSubmit }: TaskFormProps) {
           )}
         </Group>
       </Stack>
-    </form>
+    </Form>
   );
 }
 
