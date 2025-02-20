@@ -15,7 +15,6 @@ export const meta: MetaFunction = () => {
 
 export const loader = async () => {
   return {
-    error: null,
     env: loadPageConfig(),
   };
 };
