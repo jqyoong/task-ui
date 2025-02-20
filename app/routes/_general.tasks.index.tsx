@@ -15,22 +15,8 @@ export const meta: MetaFunction = () => {
 
 export const loader = async () => {
   return {
-    error: null,
     env: loadPageConfig(),
   };
-};
-
-const getStatusBadgeProps = (status: Task['status']) => {
-  switch (status) {
-    case 'not_urgent':
-      return { color: 'green' };
-    case 'due_soon':
-      return { color: 'yellow' };
-    case 'overdue':
-      return { color: 'red' };
-    default:
-      return { color: 'gray' };
-  }
 };
 
 export default function Tasks() {
@@ -177,3 +163,16 @@ export default function Tasks() {
     </Container>
   );
 }
+
+const getStatusBadgeProps = (status: Task['status']) => {
+  switch (status) {
+    case 'not_urgent':
+      return { color: 'green' };
+    case 'due_soon':
+      return { color: 'yellow' };
+    case 'overdue':
+      return { color: 'red' };
+    default:
+      return { color: 'gray' };
+  }
+};

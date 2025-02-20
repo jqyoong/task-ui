@@ -34,7 +34,7 @@ export default function TaskDetail() {
     }
   }, [id, navigate]);
 
-  const { task, isLoadingTask } = GetTaskById({
+  const { task, isLoadingTask, refreshTask } = GetTaskById({
     loaderData,
     id,
   });
@@ -50,6 +50,7 @@ export default function TaskDetail() {
         title: 'Success',
         message: 'Task updated successfully',
       });
+      await refreshTask();
     } catch (error) {
       notifications.show({
         color: 'red',
@@ -80,9 +81,8 @@ export default function TaskDetail() {
 
       {task && (
         <TaskForm
-          initialValues={{
-            name: task.name,
-            description: task.description ?? '',
+          task={{
+            ...task,
             due_date: task.due_date ? new Date(task.due_date) : null,
           }}
           onSubmit={handleSubmit}
