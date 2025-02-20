@@ -38,7 +38,7 @@ const GetAllTasks = ({
         qs: {
           name,
           page,
-          pageSize,
+          page_size: pageSize,
           sort: sort ? (sort.endsWith('_desc') ? sort : `${sort}_asc`) : '',
         },
       });
