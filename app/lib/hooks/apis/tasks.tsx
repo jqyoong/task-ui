@@ -2,7 +2,7 @@ import { type ApiLoader } from '@/lib/types/api-loader';
 import { type Task } from '@/lib/types/task';
 import { type Pagination } from '@/lib/types/pagination';
 
-import { toast } from 'react-hot-toast';
+import { notifications } from '@mantine/notifications';
 import { useState, useEffect, useCallback } from 'react';
 
 import API from '@/lib/api';
@@ -46,7 +46,11 @@ const GetAllTasks = ({
       if (error) {
         setTasksList([]);
         setListPagination(defaultPagination);
-        toast.error(error?.response?.data?.message || error?.message);
+        notifications.show({
+          color: 'red',
+          title: 'Error',
+          message: error?.response?.data?.message || error?.message,
+        });
       }
 
       const tasks = tasksResponse?.data?.collections;
@@ -62,7 +66,11 @@ const GetAllTasks = ({
 
       setIsLoadingTasksList(false);
     } catch (err) {
-      toast.error('Could not load tasks');
+      notifications.show({
+        color: 'red',
+        title: 'Error',
+        message: 'Could not load tasks',
+      });
       setIsLoadingTasksList(false);
       setTasksList([]);
       setListPagination(defaultPagination);
@@ -98,7 +106,11 @@ const GetTaskById = ({ loaderData, id }: { loaderData: ApiLoader; id: string }) 
 
       if (error) {
         setTask(null);
-        toast.error(error?.response?.data?.message || error?.message);
+        notifications.show({
+          color: 'red',
+          title: 'Error',
+          message: error?.response?.data?.message || error?.message,
+        });
       }
 
       const task = taskResponse?.data?.task;
@@ -108,7 +120,11 @@ const GetTaskById = ({ loaderData, id }: { loaderData: ApiLoader; id: string }) 
       }
       setIsLoadingTask(false);
     } catch (err) {
-      toast.error('Could not load task');
+      notifications.show({
+        color: 'red',
+        title: 'Error',
+        message: 'Could not load task',
+      });
       setIsLoadingTask(false);
       setTask(null);
     }
@@ -143,7 +159,11 @@ const CreateNewTask = ({ loaderData }: { loaderData: ApiLoader }) => {
 
     if (error) {
       const errorMessage = error?.response?.data?.message || error?.message;
-      toast.error(errorMessage);
+      notifications.show({
+        color: 'red',
+        title: 'Error',
+        message: errorMessage,
+      });
       return {
         newTask: null,
         error: errorMessage,
@@ -161,4 +181,44 @@ const CreateNewTask = ({ loaderData }: { loaderData: ApiLoader }) => {
   return { addTask };
 };
 
-export { GetAllTasks, GetTaskById, CreateNewTask };
+const UpdateTaskById = ({ loaderData }: { loaderData: ApiLoader }) => {
+  const api = new API(loaderData?.env);
+
+  const updateTask = async (id: string, name?: string, description?: string, due_date?: string) => {
+    const [error, response] = await api.put({
+      path: `/api/v1/tasks/${id}`,
+      payload: {
+        name,
+        description,
+        due_date,
+      },
+      config: {
+        headers: {},
+      },
+    });
+
+    if (error) {
+      const errorMessage = error?.response?.data?.message || error?.message;
+      notifications.show({
+        color: 'red',
+        title: 'Error',
+        message: errorMessage,
+      });
+      return {
+        task: null,
+        error: errorMessage,
+      };
+    }
+
+    const task = response?.data?.task;
+
+    return {
+      task,
+      error: null,
+    };
+  };
+
+  return { updateTask };
+};
+
+export { GetAllTasks, GetTaskById, CreateNewTask, UpdateTaskById };

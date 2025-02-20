@@ -1,11 +1,12 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useRouteError } from '@remix-run/react';
 import { type LinksFunction } from '@remix-run/node';
 
-import '@/tailwind.css';
-import { Toaster } from 'react-hot-toast';
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
+import '@mantine/notifications/styles.css';
 
-import { TailwindIndicator } from '@/components/tailwind-indicator';
-import { Providers } from '@/components/providers';
+import { Notifications } from '@mantine/notifications';
+import { createTheme, MantineProvider, ColorSchemeScript } from '@mantine/core';
 
 import loadPageConfig from '@/lib/load-page-config';
 
@@ -28,6 +29,10 @@ export const links: LinksFunction = () => [
   },
 ];
 
+const theme = createTheme({
+  fontFamily: 'Helvetica, Arial, sans-serif',
+});
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -38,15 +43,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <ColorSchemeScript />
       </head>
       <body className="font-sans antialiased" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
-        <Toaster />
-        <Providers attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <MantineProvider theme={theme}>
+          <Notifications position="top-center" />
           <div className="flex flex-col min-h-screen">
             <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
           </div>
-          <TailwindIndicator />
-        </Providers>
+        </MantineProvider>
 
         <ScrollRestoration />
         <Scripts />
