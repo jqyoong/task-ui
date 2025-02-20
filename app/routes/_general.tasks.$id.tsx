@@ -7,7 +7,7 @@ import { notifications } from '@mantine/notifications';
 import loadPageConfig from '@/lib/load-page-config';
 import { GetTaskById, UpdateTaskById } from '@/lib/hooks/apis/tasks';
 import { TaskForm } from '@/components/task-form';
-import { Button, Container, Group, Title } from '@mantine/core';
+import { Button, Container, Group, LoadingOverlay, Title } from '@mantine/core';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Task Details' }];
@@ -60,17 +60,9 @@ export default function TaskDetail() {
     setIsSubmitting(false);
   };
 
-  if (isLoadingTask) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse h-8 w-32 bg-gray-200 rounded dark:bg-gray-700 mb-6" />
-        <div className="animate-pulse h-64 bg-gray-200 rounded dark:bg-gray-700" />
-      </div>
-    );
-  }
-
   return (
     <Container mt="2rem">
+      <LoadingOverlay visible={isLoadingTask} overlayProps={{ blur: 2 }} />
       <Group mb="2rem" justify="space-between">
         <Title order={2}>Edit Task</Title>
         <Button variant="outline" color="gray" onClick={() => navigate('/tasks')}>
