@@ -7,6 +7,7 @@ import { useState } from 'react';
 
 import loadPageConfig from '@/lib/load-page-config';
 import { GetAllTasks } from '@/lib/hooks/apis/tasks';
+import { Pagination } from '@/components/ui/pagination';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'New Remix App' }, { name: 'description', content: 'Welcome to Remix!' }];
@@ -18,8 +19,6 @@ export const loader = async () => {
     env: loadPageConfig(),
   };
 };
-
-const PAGE_SIZES = [10, 20, 50, 100];
 
 export default function Tasks() {
   const loaderData = useLoaderData<typeof loader>();
@@ -83,9 +82,9 @@ export default function Tasks() {
     });
   };
 
-  const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handlePageSizeChange = (newPageSize: number) => {
     setSearchParams((prev) => {
-      prev.set('page_size', e.target.value);
+      prev.set('page_size', newPageSize?.toString() ?? '10');
       prev.set('page', '1');
       return prev;
     });
@@ -178,101 +177,14 @@ export default function Tasks() {
           )}
         </div>
 
-        <div className="mt-4 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-700 dark:text-gray-300">Show</span>
-            <select
-              value={params.pageSize}
-              onChange={handlePageSizeChange}
-              className="border rounded-md px-2 py-1 text-sm dark:bg-gray-800 dark:border-gray-700"
-            >
-              {PAGE_SIZES.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-            <span className="text-sm text-gray-700 dark:text-gray-300">entries</span>
-            {listPagination && (
-              <span className="text-sm text-gray-700 dark:text-gray-300 ml-4">
-                Showing {(params.page - 1) * params.pageSize + 1} to {Math.min(params.page * params.pageSize, listPagination.total_count)}{' '}
-                of {listPagination.total_count} entries
-              </span>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => handlePageChange(params.page - 1)}
-              disabled={params.page <= 1}
-              className={`px-3 py-1 rounded-md text-sm ${
-                params.page <= 1
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600'
-                  : 'bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-              } border dark:border-gray-700`}
-            >
-              Previous
-            </button>
-
-            <div className="flex items-center gap-1">
-              {params.page > 2 && (
-                <>
-                  <button
-                    onClick={() => handlePageChange(1)}
-                    className="px-3 py-1 rounded-md text-sm border dark:border-gray-700 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                  >
-                    1
-                  </button>
-                  {params.page > 3 && <span className="text-gray-500">...</span>}
-                </>
-              )}
-
-              {params.page > 1 && (
-                <button
-                  onClick={() => handlePageChange(params.page - 1)}
-                  className="px-3 py-1 rounded-md text-sm border dark:border-gray-700 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                >
-                  {params.page - 1}
-                </button>
-              )}
-
-              <button className="px-3 py-1 rounded-md text-sm border dark:border-gray-700 bg-blue-500 text-white">{params.page}</button>
-
-              {params.page < (listPagination?.total_pages ?? 0) && (
-                <button
-                  onClick={() => handlePageChange(params.page + 1)}
-                  className="px-3 py-1 rounded-md text-sm border dark:border-gray-700 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                >
-                  {params.page + 1}
-                </button>
-              )}
-
-              {params.page < (listPagination?.total_pages ?? 0) - 1 && (
-                <>
-                  {params.page < (listPagination?.total_pages ?? 0) - 2 && <span className="text-gray-500">...</span>}
-                  <button
-                    onClick={() => handlePageChange(listPagination?.total_pages ?? 1)}
-                    className="px-3 py-1 rounded-md text-sm border dark:border-gray-700 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                  >
-                    {listPagination?.total_pages}
-                  </button>
-                </>
-              )}
-            </div>
-
-            <button
-              onClick={() => handlePageChange(params.page + 1)}
-              disabled={params.page >= (listPagination?.total_pages ?? 1)}
-              className={`px-3 py-1 rounded-md text-sm ${
-                params.page >= (listPagination?.total_pages ?? 1)
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600'
-                  : 'bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-              } border dark:border-gray-700`}
-            >
-              Next
-            </button>
-          </div>
-        </div>
+        <Pagination
+          currentPage={params.page}
+          pageSize={params.pageSize}
+          totalPages={listPagination?.total_pages ?? 1}
+          totalCount={listPagination?.total_count ?? 0}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+        />
       </div>
     </div>
   );
