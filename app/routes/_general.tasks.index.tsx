@@ -4,7 +4,9 @@ import type { Task } from '@/lib/types/task';
 import { useLoaderData, useSearchParams, useNavigate } from '@remix-run/react';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
-import { Table, Container, Title, TextInput, Button, Group, Badge, LoadingOverlay, Pagination, Select, Text } from '@mantine/core';
+import { Table, Container, Title, TextInput, Button, Group, Badge, LoadingOverlay } from '@mantine/core';
+
+import { GroupPagination } from '@/components/group-pagination';
 
 import loadPageConfig from '@/lib/load-page-config';
 import { GetAllTasks } from '@/lib/hooks/apis/tasks';
@@ -74,21 +76,6 @@ export default function Tasks() {
     });
   };
 
-  const handlePageChange = (newPage: number) => {
-    setSearchParams((prev) => {
-      prev.set('page', newPage.toString());
-      return prev;
-    });
-  };
-
-  const handlePageSizeChange = (newPageSize: number) => {
-    setSearchParams((prev) => {
-      prev.set('page_size', newPageSize?.toString() ?? '10');
-      prev.set('page', '1');
-      return prev;
-    });
-  };
-
   return (
     <Container size="xl" mt="2rem">
       <Group mb="2rem" justify="space-between">
@@ -98,14 +85,14 @@ export default function Tasks() {
 
       <Group mb="lg">
         <TextInput
-          placeholder="Search tasks..."
+          size="sm"
+          placeholder="Search tasks ..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={handleKeyPress}
           leftSection={<MagnifyingGlassIcon className="w-4 h-4" />}
-          style={{ flex: 1 }}
         />
-        <Button variant="outline" onClick={handleSearch}>
+        <Button size="sm" variant="outline" onClick={handleSearch}>
           Search
         </Button>
       </Group>
@@ -138,31 +125,7 @@ export default function Tasks() {
         </Table.Tbody>
       </Table>
 
-      <Group justify="space-between" mt="lg">
-        <Group>
-          <span>Show</span>
-          <Select
-            value={params.pageSize.toString()}
-            onChange={(value) => handlePageSizeChange(Number(value))}
-            data={[
-              { value: '10', label: '10' },
-              { value: '20', label: '20' },
-              { value: '50', label: '50' },
-              { value: '100', label: '100' },
-            ]}
-            style={{ width: 100 }}
-          />
-          <span>entries</span>
-          {listPagination && (
-            <Text size="sm" c="dimmed">
-              Showing {(params.page - 1) * params.pageSize + 1} to {Math.min(params.page * params.pageSize, listPagination.total_count)} of{' '}
-              {listPagination.total_count} entries
-            </Text>
-          )}
-        </Group>
-
-        <Pagination value={params.page} onChange={handlePageChange} total={listPagination?.total_pages ?? 1} withEdges />
-      </Group>
+      <GroupPagination listPagination={listPagination} searchParams={searchParams} setSearchParams={setSearchParams} />
     </Container>
   );
 }
