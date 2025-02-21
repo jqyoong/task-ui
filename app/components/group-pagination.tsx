@@ -3,7 +3,7 @@ import { type Pagination as TPagination } from '@/lib/types/pagination';
 
 import { Group, Select, Text, Pagination } from '@mantine/core';
 
-interface TaskFormProps {
+interface GroupPaginationProps {
   listPagination: TPagination;
   searchParams: URLSearchParams;
   setSearchParams: SetURLSearchParams;
@@ -16,7 +16,7 @@ const ITEMS_SIZE = [
   { value: '100', label: '100' },
 ];
 
-export function GroupPagination({ listPagination, searchParams, setSearchParams }: TaskFormProps) {
+export function GroupPagination({ listPagination, searchParams, setSearchParams }: GroupPaginationProps) {
   const params = {
     page: Number(searchParams.get('page')) || 1,
     pageSize: Number(searchParams.get('page_size')) || 10,
