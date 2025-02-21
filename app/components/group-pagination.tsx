@@ -40,7 +40,7 @@ export function GroupPagination({ listPagination, searchParams, setSearchParams 
   return (
     <Group justify="space-between" mt="lg">
       <Group>
-        <span>Show</span>
+        <Text size="sm">Show</Text>
         <Select
           size="xs"
           value={params.pageSize.toString()}
@@ -49,7 +49,7 @@ export function GroupPagination({ listPagination, searchParams, setSearchParams 
           style={{ width: 100 }}
           withCheckIcon={false}
         />
-        <span>entries</span>
+        <Text size="sm">entries</Text>
         {listPagination && (
           <Text size="sm" c="dimmed">
             Showing {(params.page - 1) * params.pageSize + 1} to {Math.min(params.page * params.pageSize, listPagination.total_count)} of{' '}
