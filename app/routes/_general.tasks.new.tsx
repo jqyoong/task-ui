@@ -5,9 +5,10 @@ import { useState } from 'react';
 import { Button, Container, Group, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 
+import { TaskForm } from '@/components/task-form';
+
 import loadPageConfig from '@/lib/load-page-config';
 import { CreateNewTask } from '@/lib/hooks/apis/tasks';
-import { TaskForm } from '@/components/task-form';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'New Task' }];

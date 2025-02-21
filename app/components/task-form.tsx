@@ -6,6 +6,8 @@ import { TextInput, Textarea, Button, Stack, Group, Badge } from '@mantine/core'
 import { DatePickerInput } from '@mantine/dates';
 import { CalendarIcon } from '@radix-ui/react-icons';
 
+import { getStatusBadgeColor } from '@/lib/utils';
+
 interface TaskFormProps {
   task?: Partial<Pick<Task, 'name' | 'description' | 'due_date' | 'status'>>;
   isSubmitting?: boolean;
@@ -45,7 +47,7 @@ export function TaskForm({ task, isSubmitting, onSubmit }: TaskFormProps) {
   return (
     <Form onSubmit={handleSubmit}>
       <Stack gap="md">
-        {task?.status && <Badge {...getStatusBadgeProps(task.status)}>{task.status.replace('_', ' ')}</Badge>}
+        {task?.status && <Badge color={getStatusBadgeColor(task.status)}>{task.status.replace('_', ' ')}</Badge>}
 
         <TextInput
           label="Task Name"
@@ -88,16 +90,3 @@ export function TaskForm({ task, isSubmitting, onSubmit }: TaskFormProps) {
     </Form>
   );
 }
-
-const getStatusBadgeProps = (status: Task['status']) => {
-  switch (status) {
-    case 'not_urgent':
-      return { color: 'green' };
-    case 'due_soon':
-      return { color: 'yellow' };
-    case 'overdue':
-      return { color: 'red' };
-    default:
-      return { color: 'gray' };
-  }
-};

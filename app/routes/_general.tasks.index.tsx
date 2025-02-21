@@ -1,5 +1,4 @@
 import type { MetaFunction } from '@remix-run/node';
-import type { Task } from '@/lib/types/task';
 
 import { useLoaderData, useSearchParams, useNavigate, Link } from '@remix-run/react';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
@@ -10,6 +9,7 @@ import { GroupPagination } from '@/components/group-pagination';
 
 import loadPageConfig from '@/lib/load-page-config';
 import { GetAllTasks } from '@/lib/hooks/apis/tasks';
+import { getStatusBadgeColor } from '@/lib/utils';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Tasks Management' }];
@@ -120,7 +120,7 @@ export default function Tasks() {
               <Table.Td>{task.due_date ? new Date(task.due_date).toLocaleDateString() : '-'}</Table.Td>
               <Table.Td>{new Date(task.created_at).toLocaleDateString()}</Table.Td>
               <Table.Td>
-                <Badge {...getStatusBadgeProps(task.status)}>{task.status.replace('_', ' ')}</Badge>
+                <Badge color={getStatusBadgeColor(task.status)}>{task.status.replace('_', ' ')}</Badge>
               </Table.Td>
             </Table.Tr>
           ))}
@@ -131,16 +131,3 @@ export default function Tasks() {
     </Container>
   );
 }
-
-const getStatusBadgeProps = (status: Task['status']) => {
-  switch (status) {
-    case 'not_urgent':
-      return { color: 'green' };
-    case 'due_soon':
-      return { color: 'yellow' };
-    case 'overdue':
-      return { color: 'red' };
-    default:
-      return { color: 'gray' };
-  }
-};
