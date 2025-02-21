@@ -1,7 +1,7 @@
 import type { MetaFunction } from '@remix-run/node';
 import type { Task } from '@/lib/types/task';
 
-import { useLoaderData, useSearchParams, useNavigate } from '@remix-run/react';
+import { useLoaderData, useSearchParams, useNavigate, Link } from '@remix-run/react';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import { Table, Container, Title, TextInput, Button, Group, Badge, LoadingOverlay } from '@mantine/core';
@@ -113,8 +113,10 @@ export default function Tasks() {
         </Table.Thead>
         <Table.Tbody>
           {tasksList?.map((task) => (
-            <Table.Tr key={task.id} onClick={() => navigate(`/tasks/${task.id}`)} style={{ cursor: 'pointer' }}>
-              <Table.Td>{task.name}</Table.Td>
+            <Table.Tr key={task.id}>
+              <Table.Td>
+                <Link to={`/tasks/${task.id}`}>{task.name}</Link>
+              </Table.Td>
               <Table.Td>{task.due_date ? new Date(task.due_date).toLocaleDateString() : '-'}</Table.Td>
               <Table.Td>{new Date(task.created_at).toLocaleDateString()}</Table.Td>
               <Table.Td>
